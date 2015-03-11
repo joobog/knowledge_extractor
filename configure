@@ -16,6 +16,8 @@ function help(){
 	echo "--with-cc=<file>         : path to the C compiler"
 	echo "--with-cxx=<file>        : path to the C++ compiler"
 	echo "--with-python=<file>     : path to the Python interpreter"
+	echo "--with-siox=<dir>        : path to the SIOX root directory"
+	echo "--with-siox-dev=<dir>    : path to the SIOX Development root directory"
 	echo
 	echo "Optional:"
 	echo "--build-dir=<dir>        : directory in which to build"
@@ -37,7 +39,7 @@ function reconfigure(){
 	exit $?
 }
 
-set -- `getopt -ul "help,version,debug,reconfigure,with-boost:,with-libpq-type-dir:,with-libpqxx:,prefix:,with-cc:,with-cxx:,with-glib:,with-mpicc:,with-mpicxx:,with-libpq:,with-python:,with-likwid:,build-wrappers,use-ninja,verbose,build-dir:" hV "$@"`
+set -- `getopt -ul "help,version,debug,reconfigure,with-boost:,with-siox:,with-siox-dev:,prefix:,with-cc:,with-cxx:,with-mpicc:,with-mpicxx:,with-python:,verbose,build-dir:" hV "$@"`
 test $# -lt 1  && exit 1
 while test $# -gt 0 
 do
@@ -51,10 +53,9 @@ do
 		--with-cc) ccbin="$2"; shift;;
 		--with-cxx) cxxbin="$2"; shift;;
 		--with-python) python="$2"; shift;;
+		--with-siox) siox="$2"; shift;;
+		--with-siox-dev) sioxdev="$2"; shift;;
 		--build-dir) buildDIR="$2"; shift;;
-		--with-libpq-type-dir) 
-			CMAKEFLAGS="$CMAKEFLAGS -DPostgreSQL_TYPE_INCLUDE_DIR:PATH=$1"
-		 shift;;
 		--use-ninja) useNinja="YES";;
 		--verbose) VERBOSE="YES";;
 
@@ -82,6 +83,11 @@ if test -n "$ccbin"; then
 fi
 if test -n "$cxxbin"; then
 	CMAKEFLAGS="$CMAKEFLAGS -DCMAKE_CXX_COMPILER:FILEPATH=$cxxbin"
+fi
+if test -n "$siox"; then
+	CMAKEFLAGS="$CMAKEFLAGS -DSiox_LIBRARY_DIR:PATH=$siox/lib"
+	CMAKEFLAGS="$CMAKEFLAGS -DSiox_INCLUDE_DIR:PATH=$siox/include"
+	CMAKEFLAGS="$CMAKEFLAGS -DSiox_DEV_ROOT_DIR:PATH=$sioxdev"
 fi
 if test -n "$boostdir"; then
 	CMAKEFLAGS="$CMAKEFLAGS -DBOOST_ROOT:PATH=$boostdir"
