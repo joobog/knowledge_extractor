@@ -27,6 +27,14 @@
 class KnowledgeExtractorOptions : public monitoring::ActivityMultiplexerPluginOptions {
 	public:
 		std::string filename;
+		std::string interface;
+		std::string implementation;
+		std::string mode;
+		bool visualize;
+		std::string predictorName;
+		std::string classifierName;
+		std::string outputName;
+		unsigned int numOfClasses;
 		std::vector<std::string> openTokens;
 		std::vector<std::string> seekTokens;
 		std::vector<std::string> readTokens;
